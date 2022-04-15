@@ -1,18 +1,36 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="event-container">
+    <EventList v-for="event in Events" :key="event.id" :event="event" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import EventList from "@/components/EventList.vue";
+import serviceEvent from "../services/ServiceEvent";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    EventList,
+  },
+  data() {
+    return {
+      Events: [],
+    };
+  },
+  created() {
+    serviceEvent
+      .getEvents()
+      .then((res) => (this.Events = res.data))
+      .catch((err) => console.log(err));
   },
 };
 </script>
+
+<style scoped>
+.event-container a {
+  text-decoration: none;
+  color: inherit;
+}
+</style>
