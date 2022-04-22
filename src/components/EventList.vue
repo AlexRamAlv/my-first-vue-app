@@ -1,14 +1,11 @@
 <template>
-  <router-link :to="{ name: 'EventDetails', params: { id: event.id } }">
-    <div class="card">
-      <div class="time">
-        <p>@{{ event.time }}</p>
-        <p>{{ event.date }}</p>
-      </div>
+  <div class="card">
+    <router-link :to="{ name: 'EventDetail', params: { id: event.id } }">
+      <p>@{{ event.time }} {{ event.date }}</p>
       <h2>{{ event.title }}</h2>
       <h3>{{ event.organizer }}</h3>
-    </div>
-  </router-link>
+    </router-link>
+  </div>
 </template>
 
 <script>
