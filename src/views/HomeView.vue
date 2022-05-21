@@ -28,7 +28,6 @@
 // @ is an alias to /src
 import EventList from "@/components/EventList.vue";
 import serviceEvent from "../services/ServiceEvent";
-import { watchEffect } from "vue";
 
 export default {
   name: "HomeView",
@@ -38,21 +37,29 @@ export default {
   props: ["page"],
   data() {
     return {
-      Events: [],
+      Events: null,
       totalEvents: 0,
     };
   },
-  created() {
-    watchEffect(() => {
-      this.Events = null;
-      serviceEvent
-        .getEvents(this.page, 2)
-        .then((res) => {
-          this.Events = res.data;
-          this.totalEvents = res.headers["x-total-count"];
-        })
-        .catch(() => this.$router.push({ name: "NetworkError" }));
-    });
+  beforeRouteEnter(routeTo, routeFrom, next) {
+    serviceEvent
+      .getEvents(parseInt(routeTo.query.page) || 1, 2)
+      .then((res) => {
+        next((comp) => {
+          comp.Events = res.data;
+          comp.totalEvents = res.headers["x-total-count"];
+        });
+      })
+      .catch(() => next({ name: "NetworkError" }));
+  },
+  beforeRouteUpdate(routeTo) {
+    return serviceEvent
+      .getEvents(parseInt(routeTo.query.page) || 1, 2)
+      .then((res) => {
+        this.Events = res.data;
+        this.totalEvents = res.headers["x-total-count"];
+      })
+      .catch(() => ({ name: "NetworkError" }));
   },
   computed: {
     hasNext() {

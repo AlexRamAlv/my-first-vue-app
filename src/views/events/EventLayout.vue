@@ -1,40 +1,18 @@
 <template>
-  <div v-if="event">
-    <h2>{{ event.title }}</h2>
+  <div v-if="GStore.event">
+    <h2>{{ GStore.event.title }}</h2>
     <div id="nav">
       <router-link :to="{ name: 'EventDetail' }">Detail</router-link>|
       <router-link :to="{ name: 'EventRegister' }">Register</router-link>|
       <router-link :to="{ name: 'EventEdit' }">Edit</router-link>
     </div>
-    <router-view :event="event" />
+    <router-view :event="GStore.event" />
   </div>
 </template>
 
 <script>
-import serviceEvent from "../../services/ServiceEvent";
-
 export default {
-  props: ["id"],
-  data() {
-    return {
-      event: null,
-    };
-  },
-  created() {
-    serviceEvent
-      .getEvent(this.id)
-      .then((res) => (this.event = res.data))
-      .catch((error) => {
-        if (error.response && error.response.status == 404) {
-          this.$router.push({
-            name: "404Resource",
-            params: { resource: "event" },
-          });
-        } else {
-          this.$router.push({ name: "NetworkError" });
-        }
-      });
-  },
+  inject: ["GStore"],
 };
 </script>
 
