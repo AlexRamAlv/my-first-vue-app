@@ -43,7 +43,7 @@ export default {
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     serviceEvent
-      .getEvents(parseInt(routeTo.query.page) || 1, 2)
+      .getEvents(parseInt(routeTo.query.page) || 1, 5)
       .then((res) => {
         next((comp) => {
           comp.Events = res.data;
@@ -54,7 +54,7 @@ export default {
   },
   beforeRouteUpdate(routeTo) {
     return serviceEvent
-      .getEvents(parseInt(routeTo.query.page) || 1, 2)
+      .getEvents(parseInt(routeTo.query.page) || 1, 5)
       .then((res) => {
         this.Events = res.data;
         this.totalEvents = res.headers["x-total-count"];
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     hasNext() {
-      const totalPages = Math.ceil(this.totalEvents / 2);
+      const totalPages = Math.ceil(this.totalEvents / 5);
       return this.page < totalPages;
     },
   },
